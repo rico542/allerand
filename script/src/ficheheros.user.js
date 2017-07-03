@@ -48,7 +48,7 @@ var classeH = "";
 var niveauH = "";
 var legendeH = "";
 var gloireH = "";
-var avatar = "";
+var avatar = "http://a.imdoc.fr/merged/flat/design/user/avatar/default_tns1_avatar.png";
 var nomH = "";
 var classeRef = "";
 var raceRef = "";
@@ -467,7 +467,7 @@ function ReadHeroInfo(Document)
 {
     SetStatus("Lecture des informations du héros");
     var allTD = Document.getElementsByTagName("td");
-    var url = "";
+    //var url = "";
     for (var i = 0; i < allTD.length - 1; ++i)
     {
         if (allTD[i].innerHTML === Contents.Race_Name) {
@@ -493,11 +493,13 @@ function ReadHeroInfo(Document)
             gloireH = allTD[i + 1].textContent.trim();
         }
     }
-    var img = Document.getElementsByClassName("boardavatar");
-    var nom = Document.getElementsByClassName("changeHeroLink");
-    avatar = img[0].getAttribute("src");
-    //nomH = nom[0].textContent.trim();
 
+    try {
+        var img = Document.getElementsByClassName("boardavatar");
+        avatar = img[0].getAttribute("src");
+    } catch (e) {
+
+    }
 }
 
 function GetClanInfo(heroID, playerID) {
@@ -549,7 +551,7 @@ function GetHiddenInfo(Document, InfoName, DefaultValue)
     for (var i = 0; i < allInputs.length; ++i)
     {
         if (allInputs[i].getAttribute("type") === "hidden" &&
-            allInputs[i].name === InfoName)
+                allInputs[i].name === InfoName)
             return allInputs[i].value;
     }
     return DefaultValue;
@@ -575,8 +577,8 @@ function GetEquipment(heroID, playerID)
     };
 
     var URL = location.protocol + "//" + location.host + "/wod/spiel/hero/items.php" +
-        "?view=gear" +
-        "&session_hero_id=" + heroID;
+            "?view=gear" +
+            "&session_hero_id=" + heroID;
 
     SetStatus("Récupération de l'équipement");
 
@@ -681,7 +683,7 @@ function readAttributs(Document) {
     {
         var ligneTable = allAttributs[i].getElementsByTagName("tr");
         //lecture de chaque ligne de la table
-        
+
         for (var l = 0; l < ligneTable.length; ++l)
         {
             if (ligneTable[l].getAttribute("class") !== "header") {
@@ -866,7 +868,7 @@ function ReadEquipment(Document, heroID, playerID)
                         var nomItemS = allEquip[ez].getElementsByTagName("td")[1].getElementsByTagName("select")[0].getElementsByTagName("option");
                         for (var ezs = 0; ezs < nomItemS.length; ++ezs) {
                             if (nomItemS[ezs].getAttribute("value") == 0) {
-                            nomItem = nomItemS[ezs].innerHTML.replace("!", "").trim();
+                                nomItem = nomItemS[ezs].innerHTML.replace("!", "").trim();
                             }
                         }
 
@@ -877,10 +879,10 @@ function ReadEquipment(Document, heroID, playerID)
                     if (placeItem !== "" && nomItem !== "") {
                         if (/^sac /.test(placeItem)) {
                             //tableSac += '[tr][td]' + placeItem + '[/td][td][img]' + imgItem + '[/img][item: ' + nomItem + ']' + ' ' + affItem + '[/td][/tr]';
-                            tableSac += '[tr][td]' + placeItem + '[/td][td][img]' + imgItem + '[/img][url=http://allerand.world-of-dungeons.fr/wod/spiel/hero/item.php?item_instance_id='+idItem+']' + nomItem + '[/url]' + ' ' + affItem + '[/td][/tr]';
+                            tableSac += '[tr][td]' + placeItem + '[/td][td][img]' + imgItem + '[/img][url=http://allerand.world-of-dungeons.fr/wod/spiel/hero/item.php?item_instance_id=' + idItem + ']' + nomItem + '[/url]' + ' ' + affItem + '[/td][/tr]';
                         } else {
                             //tableEquipement += '[tr][td]' + placeItem + '[/td][td][img]' + imgItem + '[/img][item: ' + nomItem + ']' + ' ' + affItem + '[/td][/tr]';
-                            tableEquipement += '[tr][td]' + placeItem + '[/td][td][img]' + imgItem + '[/img][url=http://allerand.world-of-dungeons.fr/wod/spiel/hero/item.php?item_instance_id='+idItem+']' + nomItem + '[/url]' + ' ' + affItem + '[/td][/tr]';
+                            tableEquipement += '[tr][td]' + placeItem + '[/td][td][img]' + imgItem + '[/img][url=http://allerand.world-of-dungeons.fr/wod/spiel/hero/item.php?item_instance_id=' + idItem + ']' + nomItem + '[/url]' + ' ' + affItem + '[/td][/tr]';
                         }
 
                     }
@@ -1029,49 +1031,49 @@ function ParseItem(index, Document) {
                         if (name === Contents.Attr_Bonus) {
                             if (parsed[k][Contents.Modifier].endsWith(Contents.Used_With)) {
                                 PushWithCreateSubarrays(Attribs,
-                                                        [parsed[k][Contents.Attribute]],
-                                                        {value: Value.Parse(parsed[k][Contents.Modifier].removeRight(Contents.Used_With)), item: index, used_with: true
-                                                        }
-                                                       );
+                                        [parsed[k][Contents.Attribute]],
+                                        {value: Value.Parse(parsed[k][Contents.Modifier].removeRight(Contents.Used_With)), item: index, used_with: true
+                                        }
+                                );
                             }
                         } else if (name === Contents.Level_Bonus) {
                             if (parsed[k][Contents.Modifier].endsWith(Contents.Used_With)) {
                                 PushWithCreateSubarrays(Level,
-                                                        [parsed[k][Contents.Skill]],
-                                                        {value: Value.Parse(parsed[k][Contents.Modifier].removeRight(Contents.Used_With)), item: index, used_with: true
-                                                        }
-                                                       );
+                                        [parsed[k][Contents.Skill]],
+                                        {value: Value.Parse(parsed[k][Contents.Modifier].removeRight(Contents.Used_With)), item: index, used_with: true
+                                        }
+                                );
                             }
                         } else if (name === Contents.Effect_Bonus) {
                             PushWithCreateSubarrays(Effect,
-                                                    [parsed[k][Contents.Skill]],
-                                                    {value: Value.Parse(parsed[k][Contents.Modifier].removeRight(Contents.Used_With)), item: index, used_with: parsed[k][Contents.Modifier].endsWith(Contents.Used_With)
-                                                    }
-                                                   );
+                                    [parsed[k][Contents.Skill]],
+                                    {value: Value.Parse(parsed[k][Contents.Modifier].removeRight(Contents.Used_With)), item: index, used_with: parsed[k][Contents.Modifier].endsWith(Contents.Used_With)
+                                    }
+                            );
                         } else if (name === Contents.Damage_Taken) {
                             PushWithCreateSubarrays(DamageTaken,
-                                                    [parsed[k][Contents.Damage_Type], parsed[k][Contents.Attack_Type].removeRight(Contents.Used_With)],
-                                                    {value: Dmg.Parse(parsed[k][Contents.BonusR].removeRight(Contents.Dmg_With)), item: index, in_addition: parsed[k][Contents.BonusR].endsWith(Contents.Dmg_With), used_with: parsed[k][Contents.Attack_Type].endsWith(Contents.Used_With)
-                                                    }
-                                                   );
+                                    [parsed[k][Contents.Damage_Type], parsed[k][Contents.Attack_Type].removeRight(Contents.Used_With)],
+                                    {value: Dmg.Parse(parsed[k][Contents.BonusR].removeRight(Contents.Dmg_With)), item: index, in_addition: parsed[k][Contents.BonusR].endsWith(Contents.Dmg_With), used_with: parsed[k][Contents.Attack_Type].endsWith(Contents.Used_With)
+                                    }
+                            );
                         } else if (name === Contents.Attack_Bonus) {
                             PushWithCreateSubarrays(Attack,
-                                                    [parsed[k][Contents.Attack_Type]],
-                                                    {value: Value.Parse(parsed[k][Contents.Modifier].removeRight(Contents.Used_With)), item: index, used_with: parsed[k][Contents.Modifier].endsWith(Contents.Used_With)
-                                                    }
-                                                   );
+                                    [parsed[k][Contents.Attack_Type]],
+                                    {value: Value.Parse(parsed[k][Contents.Modifier].removeRight(Contents.Used_With)), item: index, used_with: parsed[k][Contents.Modifier].endsWith(Contents.Used_With)
+                                    }
+                            );
                         } else if (name === Contents.Damage_Bonus) {
                             PushWithCreateSubarrays(Damage,
-                                                    [parsed[k][Contents.Damage_Type], parsed[k][Contents.Attack_Type].removeRight(Contents.Used_With)],
-                                                    {value: Dmg.Parse(parsed[k][Contents.Damage_BonusR].removeRight(Contents.Dmg_With)), item: index, in_addition: parsed[k][Contents.Damage_BonusR].endsWith(Contents.Dmg_With), used_with: parsed[k][Contents.Attack_Type].endsWith(Contents.Used_With)
-                                                    }
-                                                   );
+                                    [parsed[k][Contents.Damage_Type], parsed[k][Contents.Attack_Type].removeRight(Contents.Used_With)],
+                                    {value: Dmg.Parse(parsed[k][Contents.Damage_BonusR].removeRight(Contents.Dmg_With)), item: index, in_addition: parsed[k][Contents.Damage_BonusR].endsWith(Contents.Dmg_With), used_with: parsed[k][Contents.Attack_Type].endsWith(Contents.Used_With)
+                                    }
+                            );
                         } else if (name === Contents.Defense_Bonus) {
                             PushWithCreateSubarrays(Defense,
-                                                    [parsed[k][Contents.Attack_Type]],
-                                                    {value: Value.Parse(parsed[k][Contents.Modifier].removeRight(Contents.Used_With)), item: index, used_with: parsed[k][Contents.Modifier].endsWith(Contents.Used_With)
-                                                    }
-                                                   );
+                                    [parsed[k][Contents.Attack_Type]],
+                                    {value: Value.Parse(parsed[k][Contents.Modifier].removeRight(Contents.Used_With)), item: index, used_with: parsed[k][Contents.Modifier].endsWith(Contents.Used_With)
+                                    }
+                            );
                         }
                     } else {
                         if (okH2 !== undefined || name !== Contents.Link)
@@ -1138,20 +1140,20 @@ function AddTable(heroID, Where, Data, heading, headers, desc)
 
         if (cnt > 0) {
             txt += AddTableRow(false, j,
-                               [k, total.Html(), total.Calc(HeroLevel).Html(), (cnt > 1 ? disp : last_disp)
-                               ],
-                               [false, true, true, false]
-                              );
+                    [k, total.Html(), total.Calc(HeroLevel).Html(), (cnt > 1 ? disp : last_disp)
+                    ],
+                    [false, true, true, false]
+                    );
             j++;
         }
         for (var ia = 0; ia < Data[k].length; ++ia) {
             if (!Data[k][ia].used_with)
                 continue;
             txt += AddTableRow(false, j,
-                               [k, Data[k][ia].value.Html() + Contents.Used_With, Data[k][ia].value.Calc(HeroLevel).Html() + Contents.Used_With, GetEquipmentHref(Data[k][ia].item, false)
-                               ],
-                               [false, true, true, false]
-                              );
+                    [k, Data[k][ia].value.Html() + Contents.Used_With, Data[k][ia].value.Calc(HeroLevel).Html() + Contents.Used_With, GetEquipmentHref(Data[k][ia].item, false)
+                    ],
+                    [false, true, true, false]
+                    );
             j++;
             havea = true;
         }
@@ -1196,10 +1198,10 @@ function AddTableEx(heroID, Where, Data, heading, headers, negative)
             disp += "[/table]";
             if (cnt > 0) {
                 txt += AddTableRow(false, j,
-                                   [k, l, total.Html(negative), total.Calc(HeroLevel).Html(negative), (cnt > 1 ? disp : last_disp)
-                                   ],
-                                   [false, true, true, true, false]
-                                  );
+                        [k, l, total.Html(negative), total.Calc(HeroLevel).Html(negative), (cnt > 1 ? disp : last_disp)
+                        ],
+                        [false, true, true, true, false]
+                        );
                 j++;
             }
 
@@ -1218,10 +1220,10 @@ function AddTableEx(heroID, Where, Data, heading, headers, negative)
             disp += "[/table]";
             if (cnt > 0) {
                 txt += AddTableRow(false, j,
-                                   [k, l, total.Html(negative) + Contents.Dmg_With, total.Calc(HeroLevel).Html(negative) + Contents.Dmg_With, (cnt > 1 ? disp : last_disp)
-                                   ],
-                                   [false, true, true, true, false]
-                                  );
+                        [k, l, total.Html(negative) + Contents.Dmg_With, total.Calc(HeroLevel).Html(negative) + Contents.Dmg_With, (cnt > 1 ? disp : last_disp)
+                        ],
+                        [false, true, true, true, false]
+                        );
                 j++;
                 havez = true;
             }
@@ -1229,10 +1231,10 @@ function AddTableEx(heroID, Where, Data, heading, headers, negative)
                 if (!Data[k][l][ic].used_with)
                     continue;
                 txt += AddTableRow(false, j,
-                                   [k, l + Contents.Used_With, Data[k][l][ic].value.Html(negative) + (Data[k][l][ic].in_addition ? Contents.Dmg_With : ""), Data[k][l][ic].value.Calc(HeroLevel).Html(negative) + (Data[k][l][ic].in_addition ? Contents.Dmg_With : ""), GetEquipmentHref(Data[k][l][ic].item, false)
-                                   ],
-                                   [false, true, true, true, false]
-                                  );
+                        [k, l + Contents.Used_With, Data[k][l][ic].value.Html(negative) + (Data[k][l][ic].in_addition ? Contents.Dmg_With : ""), Data[k][l][ic].value.Calc(HeroLevel).Html(negative) + (Data[k][l][ic].in_addition ? Contents.Dmg_With : ""), GetEquipmentHref(Data[k][l][ic].item, false)
+                        ],
+                        [false, true, true, true, false]
+                        );
                 j++;
                 havea = true;
                 havez = havez || Data[k][l][ic].in_addition;
@@ -1321,10 +1323,10 @@ function ParseTable(Document) {
 function makeTableTitre() {
     var titre = "";
     titre = '[table][tr][th rowspan="6"] [img]' + avatar + '[/img][/th][th colspan="2"][hero: ' + nomH + '][/th][/tr]' +
-        '[tr][td]Classe[/td][td][url=' + classeRef + ']' + classeH + '[/url][/td][/tr]' +
-        '[tr][td]Peuple[/td][td][url=' + raceRef + ']' + raceH + '[/url][/td][/tr]' +
-        '[tr][td]Niveau[/td][td]' + niveauH + '[/td][/tr]' +
-        '[tr][td]Statut de légende[/td][td]' + legendeH + '[/td][/tr]' +
-        '[tr][td]Gloire[/td][td]' + gloireH + '[/td][/tr][/table]';
+            '[tr][td]Classe[/td][td][url=' + classeRef + ']' + classeH + '[/url][/td][/tr]' +
+            '[tr][td]Peuple[/td][td][url=' + raceRef + ']' + raceH + '[/url][/td][/tr]' +
+            '[tr][td]Niveau[/td][td]' + niveauH + '[/td][/tr]' +
+            '[tr][td]Statut de légende[/td][td]' + legendeH + '[/td][/tr]' +
+            '[tr][td]Gloire[/td][td]' + gloireH + '[/td][/tr][/table]';
     return titre;
 }
